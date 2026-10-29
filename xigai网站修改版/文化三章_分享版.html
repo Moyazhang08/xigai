@@ -1,0 +1,2303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>戏 XIGAI · 文化三章（分享版）</title>
+<meta name="description" content="文化自信、交流、安全与我们的树 —— 单文件分享版，手机可直接查看。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%238f2119'/%3E%3Ctext x='50' y='73' font-size='62' text-anchor='middle' fill='%23f5e6d6'%3E%E6%96%87%3C/text%3E%3C/svg%3E">
+<style>
+/* =========================================================
+   xigai — 文化三章 共享样式
+   设计语言：纸本 + 墨 + 朱砂 + 赭金，编辑式排版
+   ========================================================= */
+
+:root {
+  --ink: #12100f;
+  --ink-soft: #1d1917;
+  --ink-line: rgba(18, 16, 15, 0.14);
+  --paper: #f6f1e7;
+  --paper-2: #efe7d7;
+  --paper-3: #e6dbc7;
+  --red: #b8352c;
+  --red-deep: #8f2119;
+  --gold: #b08a4a;
+  --jade: #33705f;
+  --muted: #6d645a;
+  --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  --maxw: 1180px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--red); color: #fff; }
+
+/* ---------- 纸纹与光晕 ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.35;
+  background-image:
+    radial-gradient(rgba(18, 16, 15, 0.055) 1px, transparent 1px),
+    radial-gradient(rgba(18, 16, 15, 0.035) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 2px 3px;
+  mix-blend-mode: multiply;
+}
+
+/* ---------- 阅读进度条 ---------- */
+.progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0;
+  background: linear-gradient(90deg, var(--red-deep), var(--red), var(--gold));
+  z-index: 10000;
+  transition: width 0.1s linear;
+}
+
+/* ---------- 顶部导航 ---------- */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px clamp(20px, 4vw, 56px);
+  background: rgba(18, 16, 15, 0.0);
+  border-bottom: 1px solid transparent;
+  transition: background 0.45s var(--ease), padding 0.45s var(--ease), border-color 0.45s var(--ease);
+  color: #f4efe4;
+}
+
+.nav.is-solid {
+  background: rgba(16, 14, 13, 0.9);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid rgba(240, 230, 210, 0.12);
+  padding: 12px clamp(20px, 4vw, 56px);
+}
+
+.nav__logo {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--serif);
+  font-size: 20px;
+  letter-spacing: 0.22em;
+}
+
+.nav__logo b { font-weight: 600; }
+.nav__logo span {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  opacity: 0.55;
+  text-transform: uppercase;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.6vw, 38px);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.nav__links a {
+  position: relative;
+  padding: 6px 0;
+  opacity: 0.72;
+  transition: opacity 0.3s var(--ease);
+}
+
+.nav__links a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 1px; width: 0;
+  background: var(--gold);
+  transition: width 0.35s var(--ease);
+}
+
+.nav__links a:hover { opacity: 1; }
+.nav__links a:hover::after,
+.nav__links a.is-active::after { width: 100%; }
+.nav__links a.is-active { opacity: 1; color: #fff; }
+
+.nav__toggle {
+  display: none;
+  width: 40px; height: 40px;
+  border: 1px solid rgba(244, 239, 228, 0.28);
+  background: transparent;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+
+.nav__toggle i {
+  position: absolute;
+  left: 10px; right: 10px;
+  height: 1px;
+  background: #f4efe4;
+  transition: transform 0.35s var(--ease), opacity 0.25s;
+}
+.nav__toggle i:nth-child(1) { top: 14px; }
+.nav__toggle i:nth-child(2) { top: 19px; }
+.nav__toggle i:nth-child(3) { top: 24px; }
+.nav.is-open .nav__toggle i:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+.nav.is-open .nav__toggle i:nth-child(2) { opacity: 0; }
+.nav.is-open .nav__toggle i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+
+/* ---------- 首屏 ---------- */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 140px clamp(22px, 5vw, 72px) 90px;
+  background:
+    radial-gradient(120% 80% at 78% 12%, rgba(176, 138, 74, 0.16), transparent 55%),
+    radial-gradient(90% 70% at 10% 88%, rgba(140, 33, 25, 0.28), transparent 60%),
+    linear-gradient(165deg, #17130f 0%, #12100f 45%, #0d0b0a 100%);
+  color: #f4efe4;
+  overflow: hidden;
+}
+
+.hero__art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.hero__art svg { width: 100%; height: 100%; }
+
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  letter-spacing: 0.42em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 26px;
+}
+
+.kicker::before {
+  content: "";
+  width: 44px; height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(56px, 11vw, 132px);
+  line-height: 1.02;
+  letter-spacing: 0.04em;
+  margin: 0 0 28px;
+  color: #fbf6ec;
+  text-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--gold);
+  position: relative;
+}
+
+.hero__sub {
+  max-width: 640px;
+  font-family: var(--serif);
+  font-size: clamp(17px, 2.1vw, 23px);
+  line-height: 1.9;
+  color: rgba(244, 239, 228, 0.76);
+  margin: 0;
+  border-left: 2px solid rgba(176, 138, 74, 0.55);
+  padding-left: 22px;
+}
+
+.hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 44px;
+}
+
+.chip {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  padding: 7px 16px;
+  border: 1px solid rgba(240, 232, 216, 0.22);
+  border-radius: 999px;
+  color: rgba(244, 239, 228, 0.72);
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
+}
+
+.chip:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(176, 138, 74, 0.08);
+}
+
+.hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: rgba(244, 239, 228, 0.45);
+  z-index: 2;
+}
+
+.hero__scroll::after {
+  content: "";
+  width: 1px; height: 54px;
+  background: linear-gradient(to bottom, rgba(176, 138, 74, 0.8), transparent);
+  animation: drop 2.4s var(--ease) infinite;
+}
+
+@keyframes drop {
+  0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  40% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+}
+
+/* 印章 */
+.seal {
+  position: absolute;
+  right: clamp(24px, 6vw, 96px);
+  top: 24%;
+  width: clamp(74px, 8vw, 108px);
+  height: clamp(74px, 8vw, 108px);
+  background: var(--red-deep);
+  color: #f5e6d6;
+  font-family: var(--serif);
+  font-size: clamp(16px, 1.7vw, 22px);
+  line-height: 1.15;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  letter-spacing: 0.1em;
+  border-radius: 3px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45), inset 0 0 0 3px rgba(255, 255, 255, 0.12);
+  transform: rotate(-6deg);
+  filter: url(#rough);
+  opacity: 0.92;
+  z-index: 2;
+}
+
+/* ---------- 通用段落 ---------- */
+.section {
+  position: relative;
+  padding: clamp(70px, 9vw, 130px) clamp(22px, 5vw, 72px);
+}
+
+.section--paper2 { background: var(--paper-2); }
+.section--dark {
+  background: linear-gradient(180deg, #14110f, #100e0d);
+  color: #f2ece0;
+}
+.section--dark .lead,
+.section--dark p { color: rgba(242, 236, 224, 0.74); }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; }
+
+.section__head {
+  display: flex;
+  gap: clamp(20px, 4vw, 56px);
+  align-items: flex-start;
+  margin-bottom: clamp(40px, 5vw, 70px);
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--ink-line);
+}
+
+.section--dark .section__head { border-color: rgba(240, 232, 216, 0.14); }
+
+.num {
+  font-family: var(--serif);
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1;
+  color: var(--red);
+  opacity: 0.85;
+  flex: none;
+  font-weight: 500;
+}
+
+.section--dark .num { color: var(--gold); }
+
+.section__head h2 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(26px, 3.4vw, 42px);
+  line-height: 1.3;
+  margin: 0 0 12px;
+  letter-spacing: 0.04em;
+}
+
+.section__head p {
+  margin: 0;
+  max-width: 660px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.lead {
+  font-family: var(--serif);
+  font-size: clamp(19px, 2.4vw, 26px);
+  line-height: 1.95;
+  color: #2c2620;
+  margin: 0 0 26px;
+  max-width: 880px;
+}
+
+.prose { max-width: 780px; color: #3a332b; }
+.prose p { margin: 0 0 1.2em; }
+
+/* 首字下沉 */
+.dropcap::first-letter {
+  float: left;
+  font-family: var(--serif);
+  font-size: 3.4em;
+  line-height: 0.92;
+  padding: 4px 12px 0 0;
+  color: var(--red-deep);
+  font-weight: 600;
+}
+
+/* ---------- 概念三卡 ---------- */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1px;
+  background: var(--ink-line);
+  border: 1px solid var(--ink-line);
+  margin-top: clamp(36px, 5vw, 60px);
+}
+
+.pillar {
+  background: var(--paper);
+  padding: clamp(24px, 3vw, 38px);
+  transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+.pillar:hover { background: #fbf7ee; }
+
+.pillar h3 {
+  font-family: var(--serif);
+  font-size: 20px;
+  margin: 0 0 10px;
+  letter-spacing: 0.14em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pillar h3 span {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: var(--gold);
+  border: 1px solid rgba(176, 138, 74, 0.45);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.pillar p { margin: 0; font-size: 14.5px; color: var(--muted); line-height: 1.9; }
+
+/* ---------- 非遗卡片网格 ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: clamp(16px, 2vw, 26px);
+}
+
+.heritage {
+  position: relative;
+  background: #fbf7ee;
+  border: 1px solid rgba(18, 16, 15, 0.1);
+  padding: clamp(22px, 2.6vw, 32px);
+  overflow: hidden;
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease), border-color 0.5s var(--ease);
+}
+
+.heritage::after {
+  content: attr(data-idx);
+  position: absolute;
+  right: -6px;
+  bottom: -26px;
+  font-family: var(--serif);
+  font-size: 96px;
+  line-height: 1;
+  color: rgba(184, 53, 44, 0.07);
+  transition: color 0.5s var(--ease), transform 0.6s var(--ease);
+}
+
+.heritage:hover {
+  transform: translateY(-6px);
+  border-color: rgba(176, 138, 74, 0.6);
+  box-shadow: 0 26px 50px -20px rgba(18, 16, 15, 0.35);
+}
+
+.heritage:hover::after { color: rgba(184, 53, 44, 0.14); transform: translateY(-4px); }
+
+.heritage__tag {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--red-deep);
+  background: rgba(184, 53, 44, 0.08);
+  padding: 3px 10px;
+  margin-bottom: 16px;
+}
+
+.heritage h3 {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.2vw, 25px);
+  margin: 0 0 6px;
+  letter-spacing: 0.1em;
+}
+
+.heritage time {
+  display: block;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.heritage p {
+  margin: 0;
+  font-size: 14.5px;
+  color: #4a4239;
+  line-height: 1.9;
+  font-family: var(--serif);
+}
+
+/* ---------- 特写块 ---------- */
+.feature {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(28px, 5vw, 70px);
+  align-items: center;
+  margin-top: clamp(50px, 6vw, 80px);
+}
+
+.feature__visual {
+  position: relative;
+  aspect-ratio: 4 / 3.4;
+  background: linear-gradient(160deg, #1b1714, #241d16 55%, #2c2118);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.feature__visual svg { width: 100%; height: 100%; }
+
+.feature__visual::after {
+  content: "自得琴社 · 意象";
+  position: absolute;
+  left: 18px;
+  bottom: 14px;
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  color: rgba(240, 230, 210, 0.4);
+}
+
+.feature h3 {
+  font-family: var(--serif);
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.4;
+  margin: 0 0 18px;
+  letter-spacing: 0.04em;
+}
+
+.feature p { color: var(--muted); font-size: 15px; line-height: 2; margin: 0 0 1em; }
+
+.mini-list { list-style: none; padding: 0; margin: 26px 0 0; }
+
+.mini-list li {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 18px;
+  padding: 16px 0;
+  border-top: 1px solid var(--ink-line);
+  font-size: 14.5px;
+  color: #4a4239;
+}
+
+.mini-list li b {
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.08em;
+}
+
+/* 深色区块内的列表需反色，否则正文与标题都不可读 */
+.section--dark .mini-list li {
+  color: rgba(242, 236, 224, 0.74);
+  border-top-color: rgba(240, 232, 216, 0.14);
+}
+
+.section--dark .mini-list li b { color: var(--gold); }
+
+.section--dark .feature p { color: rgba(242, 236, 224, 0.78); }
+
+/* ---------- 引言块 ---------- */
+.quote {
+  margin: clamp(46px, 6vw, 80px) 0 0;
+  padding: clamp(28px, 4vw, 46px) clamp(26px, 4vw, 54px);
+  background: var(--paper-3);
+  border-left: 3px solid var(--red);
+  font-family: var(--serif);
+  font-size: clamp(18px, 2.2vw, 24px);
+  line-height: 1.9;
+  color: #2c2620;
+  position: relative;
+}
+
+.quote small {
+  display: block;
+  margin-top: 14px;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  color: var(--muted);
+}
+
+/* ---------- 标签页 ---------- */
+.tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(18, 16, 15, 0.06);
+  border: 1px solid var(--ink-line);
+  margin-bottom: clamp(34px, 4vw, 54px);
+  flex-wrap: wrap;
+}
+
+.tab {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: background 0.35s var(--ease), color 0.35s var(--ease);
+}
+
+.tab:hover { color: var(--ink); }
+
+.tab.is-active {
+  background: var(--ink);
+  color: #f6f1e7;
+}
+
+.panel { display: none; animation: fade 0.5s var(--ease); }
+.panel.is-active { display: block; }
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- 出海卡片 ---------- */
+.export-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: clamp(16px, 2vw, 24px);
+}
+
+.export {
+  position: relative;
+  padding: clamp(24px, 3vw, 34px);
+  background: #fbf7ee;
+  border: 1px solid rgba(18, 16, 15, 0.1);
+  transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+
+.export:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 24px 46px -22px rgba(18, 16, 15, 0.32);
+}
+
+.export__k {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--jade);
+  margin-bottom: 14px;
+}
+
+.export__k::before {
+  content: "";
+  width: 6px; height: 6px;
+  background: var(--jade);
+  border-radius: 50%;
+}
+
+.export h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  margin: 0 0 12px;
+  letter-spacing: 0.08em;
+}
+
+.export p { margin: 0 0 14px; font-size: 14.5px; color: #4a4239; }
+
+.export ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.export ul li {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border: 1px solid var(--ink-line);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+/* ---------- 时间线 ---------- */
+.timeline {
+  position: relative;
+  margin: clamp(30px, 4vw, 50px) 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 108px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(176, 138, 74, 0.65) 8%, rgba(176, 138, 74, 0.65) 92%, transparent);
+}
+
+.timeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 108px 1fr;
+  gap: clamp(20px, 3vw, 42px);
+  padding: 18px 0;
+}
+
+.timeline time {
+  font-family: var(--serif);
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  text-align: right;
+  padding-right: 20px;
+  white-space: nowrap;
+}
+
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: 104px;
+  top: 30px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--gold);
+  box-shadow: 0 0 0 4px rgba(176, 138, 74, 0.12);
+}
+
+.timeline strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 17.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.timeline p { margin: 0; font-size: 14.5px; color: var(--muted); }
+
+/* ---------- 双栏对照 ---------- */
+.twocol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(240, 232, 216, 0.16);
+  margin-top: clamp(44px, 5vw, 70px);
+  border: 1px solid rgba(240, 232, 216, 0.16);
+}
+
+.twocol > div {
+  background: #16120f;
+  padding: clamp(26px, 3.4vw, 44px);
+}
+
+.twocol h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  margin: 0 0 6px;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+}
+
+.twocol small {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: rgba(242, 236, 224, 0.4);
+  margin-bottom: 20px;
+}
+
+.twocol ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.twocol li {
+  position: relative;
+  padding: 10px 0 10px 20px;
+  font-size: 14.5px;
+  color: rgba(242, 236, 224, 0.78);
+  border-top: 1px solid rgba(240, 232, 216, 0.1);
+}
+
+.twocol li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 20px;
+  width: 8px; height: 1px;
+  background: var(--gold);
+}
+
+/* ---------- 风险卡片 ---------- */
+.risks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: clamp(16px, 2vw, 24px);
+}
+
+.risk {
+  position: relative;
+  background: #1f1a17;
+  border: 1px solid rgba(240, 232, 216, 0.12);
+  padding: clamp(24px, 3vw, 34px);
+  color: #efe8da;
+  overflow: hidden;
+  transition: border-color 0.45s var(--ease), transform 0.45s var(--ease);
+}
+
+.risk::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0;
+  width: 3px; height: 0;
+  background: var(--red);
+  transition: height 0.5s var(--ease);
+}
+
+.risk:hover { transform: translateY(-5px); border-color: rgba(184, 53, 44, 0.5); }
+.risk:hover::before { height: 100%; }
+
+.risk__no {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  color: rgba(184, 53, 44, 0.9);
+  margin-bottom: 12px;
+}
+
+.risk h3 {
+  font-family: var(--serif);
+  font-size: 21px;
+  margin: 0 0 12px;
+  letter-spacing: 0.08em;
+  color: #fbf6ec;
+}
+
+.risk p { margin: 0; font-size: 14.5px; color: rgba(243, 236, 224, 0.78); line-height: 1.9; }
+
+/* ---------- 提醒清单 ---------- */
+.checks {
+  counter-reset: chk;
+  margin: clamp(34px, 4vw, 50px) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1px;
+  background: var(--ink-line);
+  border: 1px solid var(--ink-line);
+}
+
+.checks li {
+  counter-increment: chk;
+  background: var(--paper);
+  padding: 22px clamp(20px, 3vw, 34px);
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 18px;
+  align-items: baseline;
+  font-size: 15px;
+  color: #38312a;
+  transition: background 0.35s var(--ease);
+}
+
+.checks li:hover { background: #fbf7ee; }
+
+.checks li::before {
+  content: counter(chk, decimal-leading-zero);
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--red);
+  letter-spacing: 0.1em;
+}
+
+.checks b { font-weight: 600; color: var(--ink); }
+
+/* ---------- 法条 ---------- */
+.law {
+  margin-top: clamp(40px, 5vw, 60px);
+  border: 1px solid rgba(176, 138, 74, 0.4);
+  background: #fbf7ee;
+  padding: clamp(26px, 4vw, 48px);
+  position: relative;
+}
+
+.law::before {
+  content: "法";
+  position: absolute;
+  right: clamp(18px, 3vw, 36px);
+  top: 8px;
+  font-family: var(--serif);
+  font-size: clamp(70px, 10vw, 120px);
+  line-height: 1;
+  color: rgba(176, 138, 74, 0.08);
+  pointer-events: none;
+}
+
+.law__src {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  color: var(--red-deep);
+  margin-bottom: 16px;
+}
+
+.law blockquote {
+  margin: 0 0 20px;
+  font-family: var(--serif);
+  font-size: clamp(17px, 2vw, 21px);
+  line-height: 2;
+  color: #2c2620;
+  position: relative;
+  z-index: 1;
+}
+
+.law__note { font-size: 12.5px; color: var(--muted); margin: 0 0 16px; }
+
+.laws-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.laws-list li {
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  padding: 5px 12px;
+  border: 1px solid rgba(18, 16, 15, 0.16);
+  color: #4a4239;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- 翻页 ---------- */
+.next {
+  display: block;
+  position: relative;
+  padding: clamp(44px, 5.5vw, 72px) clamp(22px, 5vw, 72px);
+  background: linear-gradient(120deg, #17130f, #221a14);
+  color: #f4efe4;
+  overflow: hidden;
+  transition: background 0.6s var(--ease);
+}
+
+.next::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 120% at 85% 50%, rgba(176, 138, 74, 0.22), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+
+.next:hover::after { opacity: 1; }
+
+.next__inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.next small {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.next strong {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(28px, 4.4vw, 52px);
+  letter-spacing: 0.08em;
+}
+
+.next__arrow {
+  font-size: clamp(28px, 4vw, 44px);
+  color: var(--gold);
+  transition: transform 0.5s var(--ease);
+  flex: none;
+}
+
+.next:hover .next__arrow { transform: translateX(14px); }
+
+/* ---------- 页脚 ---------- */
+.footer {
+  background: #0d0b0a;
+  color: rgba(240, 232, 216, 0.55);
+  padding: clamp(44px, 6vw, 72px) clamp(22px, 5vw, 72px) 34px;
+  font-size: 13px;
+}
+
+.footer__inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 30px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(240, 232, 216, 0.1);
+}
+
+.footer__brand {
+  font-family: var(--serif);
+  font-size: 22px;
+  letter-spacing: 0.26em;
+  color: #f4efe4;
+  margin-bottom: 10px;
+}
+
+.footer__links {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.footer__links a { transition: color 0.3s; }
+.footer__links a:hover { color: var(--gold); }
+
+.footer__bottom {
+  max-width: var(--maxw);
+  margin: 22px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(240, 232, 216, 0.35);
+}
+
+/* ---------- 回到顶部 ---------- */
+.to-top {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  background: rgba(18, 16, 15, 0.82);
+  color: #f4efe4;
+  border: 1px solid rgba(240, 232, 216, 0.18);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 9997;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease), background 0.3s;
+}
+
+.to-top.is-visible { opacity: 1; pointer-events: auto; transform: none; }
+.to-top:hover { background: var(--red-deep); }
+.to-top svg { width: 16px; height: 16px; }
+
+/* ---------- 滚动入场 ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+  will-change: opacity, transform;
+}
+
+.reveal.is-in { opacity: 1; transform: none; }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .nav__toggle { display: block; }
+
+  .nav__links {
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    background: rgba(16, 14, 13, 0.97);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(240, 230, 210, 0.12);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s var(--ease);
+  }
+
+  .nav.is-open .nav__links { max-height: 320px; }
+
+  .nav__links a {
+    width: 100%;
+    padding: 16px clamp(20px, 5vw, 40px);
+    border-top: 1px solid rgba(240, 230, 210, 0.08);
+    opacity: 0.85;
+  }
+
+  .nav__links a::after { display: none; }
+
+  .hero { min-height: auto; padding-top: 130px; padding-bottom: 80px; }
+  .hero__scroll { display: none; }
+  .seal { top: 12%; right: 18px; }
+  .feature { grid-template-columns: 1fr; }
+  .feature__visual { order: -1; }
+  .twocol { grid-template-columns: 1fr; }
+  .timeline::before { left: 78px; }
+  .timeline li { grid-template-columns: 78px 1fr; gap: 18px; }
+  .timeline li::before { left: 74px; }
+  .timeline time { font-size: 13px; padding-right: 12px; }
+  .section__head { flex-direction: column; gap: 12px; }
+  .next__inner { align-items: flex-start; }
+}
+
+@media (max-width: 560px) {
+  body { font-size: 15px; }
+  .hero h1 { letter-spacing: 0.02em; }
+  .hero__sub { padding-left: 16px; }
+  .heritage::after { font-size: 74px; }
+  .checks li { grid-template-columns: 32px 1fr; gap: 12px; }
+  .timeline::before { display: none; }
+  .timeline li { grid-template-columns: 1fr; gap: 4px; }
+  .timeline li::before { display: none; }
+  .timeline time { text-align: left; padding: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .hero__scroll::after { animation: none; }
+}
+
+/* ===== 追加：视频嵌入 ===== */
+.video-embed {
+  margin-top: 22px;
+  border: 1px solid rgba(176, 138, 74, .35);
+  background: #14100c;
+  padding: 10px;
+}
+.video-embed iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+.video-embed__cap {
+  margin: 10px 2px 2px;
+  font-size: 12.5px;
+  letter-spacing: .04em;
+  color: rgba(244, 239, 228, .55);
+}
+.section:not(.section--dark) .video-embed { background: #1c1712; }
+
+/* ===== 追加：法条详细卡片 ===== */
+.law-grid {
+  margin: 26px 0 6px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+.law-item {
+  border: 1px solid rgba(143, 33, 25, .18);
+  background: #fdfaf3;
+  padding: 18px 20px;
+}
+.law-item h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: var(--ink, #2b241c);
+}
+.law-item h4 small {
+  display: block;
+  margin-top: 4px;
+  font-weight: 400;
+  font-size: 12px;
+  color: #8f2119;
+  letter-spacing: .06em;
+}
+.law-item p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: #4a4239;
+}
+
+</style>
+<style>
+/* 分享版：锚点跳转避开固定导航 */
+.chapter .hero { scroll-margin-top: 60px; }
+@media (max-width: 720px) {
+  .nav__links { gap: 10px; }
+  .nav__links a { font-size: 12px; }
+}
+</style>
+</head>
+<body data-page="home">
+
+<div class="progress" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__logo" href="#p1"><b>戏</b><span>XIGAI · 文化三章</span></a>
+  <button class="nav__toggle" aria-label="打开菜单" aria-expanded="false">
+    <i></i><i></i><i></i>
+  </button>
+  <nav class="nav__links">
+      <a href="#p1">肆 · 我们的树</a>
+      <a href="#p2">肆 · 我们的树</a>
+      <a href="#p3">肆 · 我们的树</a>
+      <a href="#p4">肆 · 我们的树</a>
+  </nav>
+</header>
+
+<main>
+  <div class="chapter" data-chapter="p1">
+
+  <!-- 首屏 -->
+  <section class="hero" id="p1">
+    <div class="hero__art" aria-hidden="true">
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#b08a4a" stop-opacity=".34"/>
+            <stop offset="100%" stop-color="#b08a4a" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f4efe4" stop-opacity=".16"/>
+            <stop offset="100%" stop-color="#f4efe4" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <circle cx="1120" cy="250" r="132" fill="url(#g1)"/>
+        <circle cx="1120" cy="250" r="132" fill="none" stroke="#b08a4a" stroke-opacity=".28"/>
+        <path d="M0 720 C 240 600 340 660 520 610 C 700 560 760 640 940 600 C 1120 560 1240 620 1440 560 L1440 900 L0 900 Z"
+              fill="none" stroke="url(#g2)" stroke-width="1.5"/>
+        <path d="M0 790 C 260 700 380 760 560 710 C 760 655 880 730 1060 690 C 1220 655 1330 700 1440 670"
+              fill="none" stroke="#f4efe4" stroke-opacity=".1" stroke-width="1"/>
+        <g stroke="#b08a4a" stroke-opacity=".18" fill="none">
+          <path d="M60 180 q 60 -40 120 0 t 120 0"/>
+          <path d="M60 214 q 60 -40 120 0 t 120 0"/>
+          <path d="M60 248 q 60 -40 120 0 t 120 0"/>
+        </g>
+        <g fill="#f4efe4" fill-opacity=".05">
+          <rect x="0" y="0" width="1440" height="900"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="seal" aria-hidden="true">文化<br>自信</div>
+
+    <div class="hero__inner">
+      <p class="kicker">第一篇章 · 源流</p>
+      <h1>文化<em>自信</em></h1>
+      <p class="hero__sub">
+        它不是一句口号，而是一条可以触摸的河——从昆曲的一支水磨腔，到海外视频平台上的一曲《神人畅》。
+      </p>
+      <div class="hero__meta">
+        <span class="chip">非物质文化遗产</span>
+        <span class="chip">民乐出海</span>
+        <span class="chip">守正创新</span>
+      </div>
+    </div>
+
+    <div class="hero__scroll">SCROLL</div>
+  </section>
+
+  <!-- 壹 -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="num">壹</div>
+        <div>
+          <h2>底气从哪里来</h2>
+          <p>一个文明能延续五千年而没有断流，靠的不是把过去封进博物馆，而是一代代人把它重新弹奏、重新缝制、重新唱出来。</p>
+        </div>
+      </div>
+
+      <p class="lead dropcap reveal">
+        今天所说的文化自信，正是这种「活着的连续性」。它不要求我们只向后者张望，而是让我们在开口说话时，知道自己的声音从哪里来。
+      </p>
+
+      <div class="prose reveal" data-delay="80">
+        <p>
+          自信不是比较出来的优越感。它更像一种从容：知道自己家里有什么、值多少钱、经得起多少代人的端详；也因此不必急着向谁证明什么。当一件宋瓷摆在展柜里，它不需要翻译，光靠釉色就能让不同语言的人安静几秒。
+        </p>
+        <p>
+          这种从容有三层依托——埋在地下的根，活在手上的技艺，以及敢拿传统去和当下碰撞的人。
+        </p>
+      </div>
+
+      <div class="pillars reveal" data-delay="140">
+        <div class="pillar">
+          <h3>根脉 <span>ROOT</span></h3>
+          <p>文字、典籍、礼俗与审美，构成一套稳定的意义系统。它让我们在读一首唐诗时，仍能准确接到那份情绪。</p>
+        </div>
+        <div class="pillar">
+          <h3>传承 <span>CRAFT</span></h3>
+          <p>非遗不是标本。一位绣娘的针法、一位斫琴师对木性的判断，都是无法速成的、必须亲手传递的知识。</p>
+        </div>
+        <div class="pillar">
+          <h3>创新 <span>NOW</span></h3>
+          <p>让古调进入新媒介：把宋画穿在身上拍视频，把琵琶接进合成器。传统因此重新变成当代人的日常经验。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 贰 · 非遗 -->
+  <section class="section section--paper2">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="num">贰</div>
+        <div>
+          <h2>名录里的中国</h2>
+          <p>截至 2024 年底，中国已有 44 个项目列入联合国教科文组织非物质文化遗产名录（名册），数量居世界第一。名单很长，下面是几个不那么常被提起、却同样值得被记住的名字。</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <article class="heritage reveal" data-idx="01">
+          <span class="heritage__tag">传统技艺</span>
+          <h3>宣纸传统制作技艺</h3>
+          <time>2009 年 · 列入代表作名录</time>
+          <p>一张纸的寿命可以超过千年。一百多道工序，从青檀树皮到"纸寿千年"，每一步都急不得。</p>
+        </article>
+
+        <article class="heritage reveal" data-idx="02" data-delay="60">
+          <span class="heritage__tag">传统美术</span>
+          <h3>热贡艺术</h3>
+          <time>2009 年 · 列入代表作名录</time>
+          <p>青海热贡的唐卡、堆绣与雕塑，一笔一色都是修行。画师屏住呼吸的那一下，就是六百年。</p>
+        </article>
+
+        <article class="heritage reveal" data-idx="03" data-delay="120">
+          <span class="heritage__tag">民俗</span>
+          <h3>送王船</h3>
+          <time>2020 年 · 中马两国联合申报列入代表作名录</time>
+          <p>闽南沿海把灾厄与祈愿托付给一艘木船，送它出海烧化。这是人与海洋之间古老的约定。</p>
+        </article>
+
+        <article class="heritage reveal" data-idx="04">
+          <span class="heritage__tag">传统技艺</span>
+          <h3>黎族传统纺染织绣技艺</h3>
+          <time>2009 年 · 列入急需保护名录，2024 年转入代表作名录</time>
+          <p>海南黎族的锦绣：纺、染、织、绣四大工艺，没有文字的民族，把历史织进了布纹里。</p>
+        </article>
+
+        <article class="heritage reveal" data-idx="05" data-delay="60">
+          <span class="heritage__tag">传统技艺</span>
+          <h3>龙泉青瓷传统烧制技艺</h3>
+          <time>2009 年 · 列入代表作名录</time>
+          <p>一抹梅子青，要靠火候、釉料与耐心一起等出来。窑门一开，成败都在那几秒钟里。</p>
+        </article>
+
+        <article class="heritage reveal" data-idx="06" data-delay="120">
+          <span class="heritage__tag">传统技艺</span>
+          <h3>木拱桥传统营造技艺</h3>
+          <time>2009 年 · 列入急需保护名录，2024 年转入代表作名录</time>
+          <p>不用一钉一铆，只靠"编梁"与榫卯，就把一根根木头架成了跨越溪谷的廊桥。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 叁 · 民乐出海 -->
+  <section class="section section--dark">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="num">叁</div>
+        <div>
+          <h2>把宋画穿在身上，把古曲弹给世界</h2>
+          <p>近几年最出圈的中国文化场景，常常发生在一块竖屏里：几个穿宋代服饰的年轻人，坐在复原的古画布景中合奏。</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature__visual reveal" aria-hidden="true">
+          <svg viewBox="0 0 600 500">
+            <defs>
+              <linearGradient id="silk" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d8b979" stop-opacity=".5"/>
+                <stop offset="100%" stop-color="#8a5a2b" stop-opacity=".18"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="600" height="500" fill="#1c1712"/>
+            <circle cx="430" cy="120" r="62" fill="none" stroke="#b08a4a" stroke-opacity=".5"/>
+            <path d="M0 380 C 120 340 180 400 300 360 C 420 320 480 380 600 340 L600 500 L0 500 Z" fill="url(#silk)" opacity=".55"/>
+            <g stroke="#f4efe4" stroke-opacity=".35" stroke-width="1" fill="none">
+              <path d="M120 360 q 40 -70 90 0"/>
+              <path d="M240 372 q 40 -70 90 0"/>
+              <path d="M360 356 q 40 -70 90 0"/>
+            </g>
+            <g fill="#f4efe4" fill-opacity=".72">
+              <rect x="150" y="250" width="26" height="110" rx="3"/>
+              <rect x="262" y="238" width="26" height="122" rx="3"/>
+              <rect x="374" y="252" width="26" height="108" rx="3"/>
+            </g>
+            <g stroke="#f4efe4" stroke-opacity=".55" stroke-width="1">
+              <path d="M163 250 L163 180" /><path d="M275 238 L275 168" /><path d="M387 252 L387 182"/>
+            </g>
+            <g fill="#b08a4a" fill-opacity=".5">
+              <circle cx="163" cy="172" r="4"/><circle cx="275" cy="160" r="4"/><circle cx="387" cy="174" r="4"/>
+            </g>
+            <text x="40" y="90" fill="#f4efe4" fill-opacity=".28" font-size="20" font-family="serif" letter-spacing="6">高山流水</text>
+          </svg>
+
+          <div class="video-embed reveal" data-delay="120">
+            <iframe src="https://player.bilibili.com/player.html?bvid=BV1Xi4y1s717&page=1&high_quality=1&danmaku=0&autoplay=0"
+                    title="自得琴社《神人畅》" scrolling="no" frameborder="no" allowfullscreen="true"></iframe>
+            <p class="video-embed__cap">视频 · 自得琴社《神人畅》：与神共舞，用想象填补历史的空白（汉代装束复原）</p>
+          </div>
+        </div>
+
+        <div class="reveal" data-delay="80">
+          <h3>自得琴社：把一整个宋代，搬进一支视频</h3>
+          <p>
+            他们的视频色调像绢本，构图像立轴，演奏的多是古琴、笛、箫一类传统乐器。没有解说、没有炫技，
+            只是认真地把一首古曲完整弹完——却在海外视频平台被反复转发，评论区里常有人问："这是什么乐器？"
+          </p>
+          <p>
+            这正是文化自信最朴素的样子：不急着解释，先把东西做到足够好，好奇的人自然会走过来。
+          </p>
+
+          <ul class="mini-list">
+            <li><b>女子十二乐坊</b><span>把民乐带进海外剧场，用流行化的编曲与舞台语言，让二胡、琵琶第一次站上商业演出市场。</span></li>
+            <li><b>方锦龙</b><span>五弦琵琶的复原者与实践者，与流行乐、交响乐频繁跨界，让传统乐器出现在年轻人的歌单里。</span></li>
+            <li><b>谭盾</b><span>以《武侠三部曲》等作品，把中国的音色、结构与哲学写进国际乐坛的常规曲目。</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="quote reveal">
+        「传统不是用来供奉的火种，而是需要不断添柴的火。」
+        <small>—— 关于传承的一种说法</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- 肆 -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="num">肆</div>
+        <div>
+          <h2>添柴的人</h2>
+          <p>真正让传统活下来的，往往不是宏大叙事，而是一些具体的人、具体的下午。</p>
+        </div>
+      </div>
+
+      <div class="prose reveal">
+        <p>
+          非遗进校园、技艺数字化建档、博物馆把藏品做成可以交互的数字展——这些工作不那么上热搜，却决定了十年之后，
+          我们还能不能找到一位会完整唱完某段折子戏的人。
+        </p>
+        <p>
+          更日常的一面是：有人用短视频记录一位老匠人做一把油纸伞的全过程；有人把方言童谣做成手机铃声；
+          有人在游戏里复原了一座早已焚毁的古建筑。这些行为单独看都很小，加起来就是一种接力。
+        </p>
+        <p>
+          文化自信的最终形态，不是我们向外人展示多少珍宝，而是我们自己在生活里，仍然愿意使用它们。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+  <div class="chapter" data-chapter="p2">
+
+  <section class="hero" id="p2">
+    <div class="hero__art" aria-hidden="true">
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="hx" cx="50%" cy="45%" r="60%">
+            <stop offset="0%" stop-color="#b08a4a" stop-opacity=".26"/>
+            <stop offset="100%" stop-color="#b08a4a" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="720" cy="420" r="330" fill="url(#hx)"/>
+        <g fill="none" stroke="#f4efe4" stroke-opacity=".12">
+          <circle cx="720" cy="420" r="150"/>
+          <circle cx="720" cy="420" r="230"/>
+          <circle cx="720" cy="420" r="310"/>
+        </g>
+        <g stroke="#b08a4a" stroke-opacity=".4" fill="none" stroke-width="1.2">
+          <path d="M240 720 C 420 560 560 660 720 500 C 880 340 1020 440 1200 280"/>
+          <path d="M1200 720 C 1020 560 880 660 720 500 C 560 340 420 440 240 280"/>
+        </g>
+        <g fill="#f4efe4" fill-opacity=".7">
+          <circle cx="240" cy="720" r="4"/><circle cx="1200" cy="280" r="4"/>
+          <circle cx="240" cy="280" r="4"/><circle cx="1200" cy="720" r="4"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="seal" aria-hidden="true">交流<br>互鉴</div>
+
+    <div class="hero__inner">
+      <p class="kicker">第二篇章 · 互鉴</p>
+      <h1>文化<em>交流</em></h1>
+      <p class="hero__sub">
+        文化从来不是独白。它先被年轻人装进口袋，再被国家写进日程——一头是游戏与番剧，一头是展览与互访。
+      </p>
+      <div class="hero__meta">
+        <span class="chip">民间视角 · 出海</span>
+        <span class="chip">宏观视角 · 引进来与走出去</span>
+        <span class="chip">交流是双向的</span>
+      </div>
+    </div>
+
+    <div class="hero__scroll">SCROLL</div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="num">壹</div>
+        <div>
+          <h2>先从你昨晚打开的那款游戏说起</h2>
+          <p>最有效的文化传播，往往不是宣传片，而是让人自愿花掉几百个小时的东西。以下两类视角，请分开看。</p>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="视角切换">
+        <button class="tab is-active" role="tab" aria-selected="true" data-tab="folk">民间视角</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="macro">国际宏观视角</button>
+      </div>
+
+      <!-- 民间视角 -->
+      <div class="panel is-active" id="folk" role="tabpanel">
+        <p class="lead reveal">
+          年轻人不负责"输出文化"，他们只是在挑好东西玩。而恰好，这几年中国造的东西越来越能打了。
+        </p>
+
+        <div class="export-grid">
+          <article class="export reveal">
+            <div class="export__k">GAME · 游戏</div>
+            <h3>把古建与说书装进开放世界</h3>
+            <p>
+              《原神》让海外玩家第一次认真讨论璃月的建筑与戏曲；《黑神话：悟空》把陕北说书、山西古建、佛教造像
+              一并放进了全球玩家的屏幕——很多人是先被画面震住，才回头去查"这是哪座庙"。
+            </p>
+            <ul><li>原神 2020</li><li>黑神话·悟空 2024</li><li>玩家二创</li></ul>
+          </article>
+
+          <article class="export reveal" data-delay="60">
+            <div class="export__k">WEB NOVEL · 网文</div>
+            <h3>海外读者在追更"修仙"</h3>
+            <p>
+              起点国际等平台把中文网络小说成规模地译出去，"玄幻""修仙""系统流"成了海外读者熟悉的类型标签。
+              追更、打赏、催更的仪式感，被完整搬到了另一种语言里。
+            </p>
+            <ul><li>起点国际 2017</li><li>翻译生态</li><li>读者社群</li></ul>
+          </article>
+
+          <article class="export reveal" data-delay="120">
+            <div class="export__k">ANIMATION · 动漫</div>
+            <h3>水墨与赛博可以并存</h3>
+            <p>
+              《伍六七》以方言与市井感取胜，《雾山五行》把水墨打斗做到极致。
+              它们不再靠"东方元素"当装饰，而是把审美本身当成叙事的一部分。
+            </p>
+            <ul><li>伍六七 2018</li><li>雾山五行 2020</li><li>水墨叙事</li></ul>
+          </article>
+
+          <article class="export reveal">
+            <div class="export__k">DRAMA · 剧集</div>
+            <h3>字幕组和二创在接力</h3>
+            <p>
+              《琅琊榜》《甄嬛传》《庆余年》等作品在海外平台陆续播出后，真正让它们扩散的是字幕组、
+              剪辑二创和粉丝社群——观众自发完成了一轮"民间翻译"。
+            </p>
+            <ul><li>古装</li><li>悬疑</li><li>粉丝翻译</li></ul>
+          </article>
+
+          <article class="export reveal" data-delay="60">
+            <div class="export__k">SHORT DRAMA · 微短剧</div>
+            <h3>竖屏叙事的反向输出</h3>
+            <p>
+              2022 年以后，竖屏短剧在海外快速起量：一分钟一个反转、三分钟一个钩子。它是中国团队最先跑通的
+              内容形态之一，也把"爽感叙事"的节奏教给了海外市场。
+            </p>
+            <ul><li>ReelShort 2022</li><li>竖屏</li><li>强节奏</li></ul>
+          </article>
+
+          <article class="export reveal" data-delay="120">
+            <div class="export__k">WHY · 为什么能行</div>
+            <h3>先好看，再谈文化</h3>
+            <p>
+              这些作品的共同点不是"讲了什么中国故事"，而是"首先是一个好作品"。文化是顺手带出去的，
+              不是被硬塞进去的。
+            </p>
+            <ul><li>质量优先</li><li>情绪通用</li><li>平台放大</li></ul>
+          </article>
+        </div>
+
+        <div class="pillars reveal">
+          <div class="pillar">
+            <h3>先好看 <span>01</span></h3>
+            <p>没人会为了一堂文化课打通一款游戏。作品先成立，文化才有地方落脚。</p>
+          </div>
+          <div class="pillar">
+            <h3>情绪是通用语 <span>02</span></h3>
+            <p>不甘、团圆、赢一次、护住一个人——这些情绪不需要翻译，字幕只负责把细节对齐。</p>
+          </div>
+          <div class="pillar">
+            <h3>二创是放大器 <span>03</span></h3>
+            <p>剪辑、同人、攻略、考据帖。官方只负责点火，扩散靠的是观众自己愿意接着讲。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 宏观视角 -->
+      <div class="panel" id="macro" role="tabpanel">
+        <p class="lead reveal">
+          另一条线更慢、更正式：以年为单位的文化年、互访、联展与联合考古。它不制造爆款，但决定长期的理解程度。
+        </p>
+
+        <ul class="timeline">
+          <li class="reveal">
+            <time>2001</time>
+            <div>
+              <strong>昆曲列入首批人类非遗代表作</strong>
+              <p>中国传统表演艺术第一次以"人类共同遗产"的身份进入国际名录体系。</p>
+            </div>
+          </li>
+          <li class="reveal" data-delay="40">
+            <time>2016</time>
+            <div>
+              <strong>二十四节气列入人类非遗代表作名录</strong>
+              <p>一套关于时间的知识体系被确认为人类共同的文化实践。</p>
+            </div>
+          </li>
+          <li class="reveal" data-delay="80">
+            <time>2024</time>
+            <div>
+              <strong>春节列入人类非遗代表作名录</strong>
+              <p>全球约五分之一人口共同参与的节日，成为全人类共享的非物质文化遗产。</p>
+            </div>
+          </li>
+          <li class="reveal" data-delay="120">
+            <time>2024</time>
+            <div>
+              <strong>中法文化旅游年</strong>
+              <p>建交 60 周年背景下，展览、演出、文物互借与人员互访密集展开，是"双向交流"的典型样本。</p>
+            </div>
+          </li>
+          <li class="reveal" data-delay="160">
+            <time>2024—2025</time>
+            <div>
+              <strong>中俄文化年</strong>
+              <p>以国家级文化年形式，推动演出、电影、博物馆与青年交流的常态化。</p>
+            </div>
+          </li>
+          <li class="reveal" data-delay="200">
+            <time>近年</time>
+            <div>
+              <strong>联合考古与合拍影像</strong>
+              <p>中外联合考古、合拍纪录片、博物馆互展越来越多——它们不追求热闹，追求的是共同的知识生产。</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="twocol reveal">
+          <div>
+            <h3>引进来</h3>
+            <small>INBOUND</small>
+            <ul>
+              <li>海外影视、音乐剧、展览在国内常态化上演</li>
+              <li>留学生与访问学者带来的日常文化接触</li>
+              <li>博物馆引进海外大展，也引进新的策展方法</li>
+              <li>国外的非遗保护、公共艺术经验被本地化吸收</li>
+            </ul>
+          </div>
+          <div>
+            <h3>走出去</h3>
+            <small>OUTBOUND</small>
+            <ul>
+              <li>「欢乐春节」等品牌活动在全球城市落地</li>
+              <li>国家级文化年、艺术节与巡演</li>
+              <li>文物外展、联合考古与学术出版</li>
+              <li>游戏、影视、网文的商业发行与平台合作</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="quote reveal">
+          「交流的前提不是相同，而是承认彼此不同，并且仍然愿意坐下来。」
+          <small>—— 关于互鉴</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 贰 · 引进来 -->
+  <section class="section section--paper2">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="num">贰</div>
+        <div>
+          <h2>流进来的河</h2>
+          <p>把镜头掉个头：这些年中国文化不断走出去的同时，外国的文化也一直在流进来。只看不付、只出不进的那叫广播，不叫交流。</p>
+        </div>
+      </div>
+
+      <p class="lead dropcap reveal">
+        交流之所以叫交流，是因为水是双向流动的。我们把自己的故事讲给世界听，也一直在认真看别人的故事。
+      </p>
+
+      <div class="export-grid">
+        <article class="export reveal">
+          <div class="export__k">THEATRE · 剧场</div>
+          <h3>西区和百老汇排队进中国</h3>
+          <p>
+            《剧院魅影》《猫》《音乐之声》的中文版常年巡演，海外原版音乐剧、交响乐团、芭蕾舞团
+            把北京、上海、广州列入年度巡演的固定站点，场场爆满。
+          </p>
+          <ul><li>中文版音乐剧</li><li>原版巡演</li><li>一票难求</li></ul>
+        </article>
+
+        <article class="export reveal" data-delay="60">
+          <div class="export__k">MUSEUM · 展览</div>
+          <h3>从莫奈到古埃及，大展不断</h3>
+          <p>
+            印象派、文艺复兴、古埃及文明大展接连来华，"排队三小时"成为常态。海外博物馆带来的
+            不只是藏品，还有新的策展语言与观展习惯。
+          </p>
+          <ul><li>海外大展</li><li>联合策展</li><li>文物互借</li></ul>
+        </article>
+
+        <article class="export reveal" data-delay="120">
+          <div class="export__k">ACG · 动漫影视</div>
+          <h3>陪伴几代人的另一面镜子</h3>
+          <p>
+            日本动漫、好莱坞电影、欧洲艺术片陪伴了几代中国观众成长，也参与塑造了我们的审美与
+            想象力——今天中国创作者讲的很多方法，本身就是交流的产物。
+          </p>
+          <ul><li>日漫</li><li>好莱坞</li><li>审美养成</li></ul>
+        </article>
+
+        <article class="export reveal">
+          <div class="export__k">PARK · 主题乐园</div>
+          <h3>海外 IP 落地，也要入乡随俗</h3>
+          <p>
+            迪士尼、环球影城把海外 IP 整座搬进中国，又不得不为本地口味做调整：新春限定、国风
+            巡游、本土角色。外来文化想扎根，就必须学会和中国文化商量着来。
+          </p>
+          <ul><li>本地化改造</li><li>新春限定</li><li>双向适应</li></ul>
+        </article>
+
+        <article class="export reveal" data-delay="60">
+          <div class="export__k">DAILY · 日常</div>
+          <h3>咖啡馆、Citywalk 与生活方式</h3>
+          <p>
+            咖啡文化、街头市集、极限运动、城市漫步——许多发源于外部的生活方式，在中国长出了
+            自己的版本。引进从来不是复制，而是再创造。
+          </p>
+          <ul><li>生活方式</li><li>本地化</li><li>再创造</li></ul>
+        </article>
+
+        <article class="export reveal" data-delay="120">
+          <div class="export__k">WHY · 为什么引进也重要</div>
+          <h3>见过别人的好，才懂自己的好</h3>
+          <p>
+            开门让人进来，不是不自信，恰恰是自信：知道自己的东西经得起比较。见过足够多的别人的
+            好东西，才知道自己手里的好在哪、差在哪。
+          </p>
+          <ul><li>开放</li><li>比较</li><li>互鉴</li></ul>
+        </article>
+      </div>
+
+      <div class="quote reveal">
+        「交流的前提不是相同，而是承认彼此不同，并且仍然愿意坐下来——而且，桌上得有两个人的声音。」
+        <small>—— 关于互鉴</small>
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+  <div class="chapter" data-chapter="p3">
+
+  <section class="hero" id="p3">
+    <div class="hero__art" aria-hidden="true">
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="wall" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#8f2119" stop-opacity=".25"/>
+            <stop offset="50%" stop-color="#8f2119" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#8f2119" stop-opacity=".25"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="1440" height="900" fill="url(#wall)"/>
+        <g stroke="#f4efe4" stroke-opacity=".1" fill="none">
+          <path d="M0 240 H1440" /><path d="M0 470 H1440" /><path d="M0 700 H1440"/>
+        </g>
+        <g fill="none" stroke="#b08a4a" stroke-opacity=".35">
+          <path d="M720 180 L 1000 340 L 1000 620 L 720 780 L 440 620 L 440 340 Z"/>
+          <path d="M720 250 L 940 375 L 940 585 L 720 710 L 500 585 L 500 375 Z" stroke-opacity=".18"/>
+        </g>
+        <g stroke="#b08a4a" stroke-opacity=".5">
+          <path d="M0 400 H 340 M0 440 H 300 M0 480 H 340"/>
+          <path d="M1440 400 H 1100 M1440 440 H 1140 M1440 480 H 1100"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="seal" aria-hidden="true">防线<br>守护</div>
+
+    <div class="hero__inner">
+      <p class="kicker">第三篇章 · 防线</p>
+      <h1>文化<em>安全</em></h1>
+      <p class="hero__sub">
+        文化安全不是把门关上，而是知道自己家里有什么、值多少、谁在惦记——然后决定，哪些东西可以换，哪些不能。
+      </p>
+      <div class="hero__meta">
+        <span class="chip">风险图谱</span>
+        <span class="chip">日常提醒</span>
+        <span class="chip">法律依据</span>
+      </div>
+    </div>
+
+    <div class="hero__scroll">SCROLL</div>
+  </section>
+
+  <section class="section section--dark">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="num">壹</div>
+        <div>
+          <h2>六种常见风险</h2>
+          <p>它们大多数不披"敌意"的外衣，而是以娱乐、学术、审美或"多元"的名义出现，因此更需要被认出来。</p>
+        </div>
+      </div>
+
+      <div class="risks">
+        <article class="risk reveal">
+          <div class="risk__no">RISK / 01</div>
+          <h3>意识形态渗透</h3>
+          <p>以"普世价值""多元包容"为包装的价值输出，往往从影视剧、综艺、社交话题慢慢渗入，单个作品看不出问题，长期积累才显现效果。</p>
+        </article>
+
+        <article class="risk reveal" data-delay="60">
+          <div class="risk__no">RISK / 02</div>
+          <h3>历史虚无主义</h3>
+          <p>解构英雄、调侃苦难、为侵略者"洗白"。它常披着"重新考据""还原真相"的外壳，实际是用片段拼出错误的史观。</p>
+        </article>
+
+        <article class="risk reveal" data-delay="120">
+          <div class="risk__no">RISK / 03</div>
+          <h3>网络谣言与抹黑</h3>
+          <p>一条剪辑过的短视频、一张配错图的老照片，传播速度远超一篇论文。文化领域尤其容易"先定罪，再找证据"。</p>
+        </article>
+
+        <article class="risk reveal">
+          <div class="risk__no">RISK / 04</div>
+          <h3>文物与非遗流失</h3>
+          <p>盗掘、走私、技艺断代；除此之外还有"抢注"与"文化挪用"——把别人的传统包装成自己的原创，再反过来收授权费。</p>
+        </article>
+
+        <article class="risk reveal" data-delay="60">
+          <div class="risk__no">RISK / 05</div>
+          <h3>数据与数字资源</h3>
+          <p>数字文物高精度扫描、族谱、方言语音、地方志、生物样本，都是可被采集、可被商业化的战略资源。数据出境，也是一种"流失"。</p>
+        </article>
+
+        <article class="risk reveal" data-delay="120">
+          <div class="risk__no">RISK / 06</div>
+          <h3>文化产品中的价值偏移</h3>
+          <p>审美可以多元，底线不能模糊：涉黄涉暴、畸形饭圈、恶搞英烈与重大历史事件，这些不是"创作自由"能覆盖的部分。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="num">贰</div>
+        <div>
+          <h2>五个具体提醒</h2>
+          <p>宏大的概念落到日常，其实只有几件小事。做到这几件，就已经在守了。</p>
+        </div>
+      </div>
+
+      <ol class="checks">
+        <li class="reveal"><span>看到"惊人历史真相"，先去官方史料库与权威出版物核对。反常识不等于真相，可能只是被剪掉的那半句话。</span></li>
+        <li class="reveal" data-delay="40"><span>不转发、不二次创作针对<strong>英雄烈士</strong>与重大历史事件的恶搞内容。<strong>《英雄烈士保护法》</strong>对此有明确规定。</span></li>
+        <li class="reveal" data-delay="80"><span>参与境外"文化合作""学术调研"时，留意<strong>敏感资料与数据出境</strong>：未经批准的高精度测绘、族谱与方言语料、遗址坐标，都不该随口给出。</span></li>
+        <li class="reveal" data-delay="120"><span>支持正版，拒绝盗录盗播。盗版伤害的不只是片方，更是整个创作生态——<strong>没有回报的手艺，会自己消失</strong>。</span></li>
+        <li class="reveal" data-delay="160"><span>带孩子去一次博物馆、学一门手艺、认真过好一个传统节日。<strong>比转发十条口号更有用。</strong></span></li>
+      </ol>
+
+      <div class="law reveal">
+        <div class="law__src">《中华人民共和国国家安全法》第二十三条（摘录）</div>
+        <blockquote>
+          国家坚持社会主义先进文化前进方向，继承和弘扬中华民族优秀传统文化，培育和践行社会主义核心价值观，
+          防范和抵御不良文化的影响，掌握意识形态领域主导权，增强文化整体实力和竞争力。
+        </blockquote>
+        <p class="law__note">以上为条文摘录，仅供学习参考；正式引用请以全国人大公布文本为准。</p>
+
+        <h4 style="margin:30px 0 4px;font-size:16px;">与文化安全相关的七部法律，各自在管什么</h4>
+        <div class="law-grid">
+          <div class="law-item">
+            <h4>《国家安全法》<small>2015 年施行 · 第二十三条</small></h4>
+            <p>文化安全入法的总纲：坚持社会主义先进文化前进方向，继承和弘扬中华优秀传统文化，防范和抵御不良文化影响，掌握意识形态领域主导权（即上文摘录）。</p>
+          </div>
+          <div class="law-item">
+            <h4>《文物保护法》<small>1982 年施行，2024 年修订</small></h4>
+            <p>要点：中华人民共和国境内地下、内水和领海中遗存的一切文物属于国家所有；盗掘、倒卖、走私文物均属违法犯罪；修订后进一步压实了文物保护责任，强化了对文物犯罪「从重追究」的导向。</p>
+          </div>
+          <div class="law-item">
+            <h4>《非物质文化遗产法》<small>2011 年施行 · 第四条</small></h4>
+            <p>要点：使用非物质文化遗产，应当注重其真实性、整体性和传承性，有利于增强中华民族的文化认同——防止把非遗做成「贴牌的空壳」。</p>
+          </div>
+          <div class="law-item">
+            <h4>《英雄烈士保护法》<small>2018 年施行 · 第二十二条</small></h4>
+            <p>要点：禁止歪曲、丑化、亵渎、否定英雄烈士事迹和精神；公安、网信等部门发现相关网络信息，应当及时依法处置——恶搞英烈不是「玩梗自由」。</p>
+          </div>
+          <div class="law-item">
+            <h4>《网络安全法》<small>2017 年施行 · 第十二条</small></h4>
+            <p>要点：任何个人和组织使用网络，不得利用网络编造、传播扰乱社会秩序、侵害他人合法权益的信息——对谣言与抹黑内容划出了红线。</p>
+          </div>
+          <div class="law-item">
+            <h4>《数据安全法》<small>2021 年施行</small></h4>
+            <p>要点：关系国家安全的重要数据出境须依法接受安全评估。数字文物扫描件、方言语音库、地方志与族谱等文化数据出境，同样落在这一框架之内。</p>
+          </div>
+          <div class="law-item">
+            <h4>《电影产业促进法》<small>2017 年施行 · 第十六条</small></h4>
+            <p>要点：列明电影不得含有的内容负面清单，并对虚构与文化类内容的创作底线作出规定——产业要促进，方向不能偏。</p>
+          </div>
+        </div>
+
+        <ul class="laws-list">
+          <li>国家安全法</li>
+          <li>文物保护法</li>
+          <li>非物质文化遗产法</li>
+          <li>英雄烈士保护法</li>
+          <li>网络安全法</li>
+          <li>数据安全法</li>
+          <li>电影产业促进法</li>
+        </ul>
+      </div>
+
+      <div class="quote reveal">
+        「开放不等于没有边界。真正的自信，是敢开门，也守得住自己的门。」
+        <small>—— 关于文化安全</small>
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+  <div class="chapter" data-chapter="p4">
+
+  <section class="hero" id="p4">
+    <div class="hero__art" aria-hidden="true">
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="soil" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#b08a4a" stop-opacity=".3"/>
+            <stop offset="100%" stop-color="#b08a4a" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <circle cx="720" cy="300" r="260" fill="url(#soil)"/>
+        <g stroke="#f4efe4" stroke-opacity=".1" fill="none">
+          <path d="M0 260 H1440"/><path d="M0 520 H1440"/><path d="M0 760 H1440"/>
+        </g>
+        <g stroke="#b08a4a" stroke-opacity=".3" fill="none" stroke-width="1.2">
+          <path d="M720 700 C 720 560 700 480 720 380 C 740 280 690 220 720 140"/>
+          <path d="M720 380 C 620 340 560 260 520 180"/>
+          <path d="M720 380 C 820 340 880 260 920 180"/>
+          <path d="M720 470 C 600 450 520 480 440 560"/>
+          <path d="M720 470 C 840 450 920 480 1000 560"/>
+          <path d="M720 700 C 600 760 520 800 420 820"/>
+          <path d="M720 700 C 840 760 920 800 1020 820"/>
+          <path d="M720 700 C 720 760 720 800 720 860"/>
+        </g>
+        <g fill="#f4efe4" fill-opacity=".55">
+          <circle cx="720" cy="140" r="6"/>
+          <circle cx="520" cy="180" r="5"/><circle cx="920" cy="180" r="5"/>
+          <circle cx="440" cy="560" r="4"/><circle cx="1000" cy="560" r="4"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="seal" aria-hidden="true">生根<br>结果</div>
+
+    <div class="hero__inner">
+      <p class="kicker">第四篇章 · 生长</p>
+      <h1>我们的<em>树</em></h1>
+      <p class="hero__sub">
+        把前面三章合起来看：自信是根，交流是枝，安全是篱——长在一起，才是"文化繁荣兴盛"这棵树的样子。
+      </p>
+      <div class="hero__meta">
+        <span class="chip">一张总图</span>
+        <span class="chip">一些做法</span>
+      </div>
+    </div>
+
+    <div class="hero__scroll">SCROLL</div>
+  </section>
+
+  <!-- 壹 · 树 -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="num">壹</div>
+        <div>
+          <h2>把三章种成一棵树</h2>
+          <p>根脉让树站得稳，枝叶让它与世界交换空气，篱笆护它不被折断——三者缺一，都不叫"兴盛"。</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature__visual reveal" aria-hidden="true">
+          <svg viewBox="0 0 600 620">
+            <defs>
+              <linearGradient id="trunkg" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stop-color="#8a5a2b" stop-opacity=".55"/>
+                <stop offset="100%" stop-color="#d8b979" stop-opacity=".35"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="600" height="620" fill="#1c1712"/>
+            <!-- 土壤 -->
+            <path d="M0 470 C 120 450 200 480 300 470 C 400 460 480 485 600 470 L600 620 L0 620 Z" fill="#8a5a2b" fill-opacity=".22"/>
+            <!-- 根 -->
+            <g stroke="#d8b979" stroke-opacity=".5" stroke-width="2" fill="none">
+              <path d="M300 470 C 240 500 190 520 130 560"/>
+              <path d="M300 470 C 360 500 410 520 470 560"/>
+              <path d="M300 470 C 300 510 300 540 300 590"/>
+              <path d="M300 470 C 260 520 240 560 230 600"/>
+              <path d="M300 470 C 340 520 360 560 370 600"/>
+            </g>
+            <!-- 树干 -->
+            <path d="M300 470 C 290 380 288 300 300 210 L312 210 C 320 300 316 380 300 470 Z" fill="url(#trunkg)" stroke="#d8b979" stroke-opacity=".35"/>
+            <!-- 枝 -->
+            <g stroke="#d8b979" stroke-opacity=".55" stroke-width="2" fill="none">
+              <path d="M300 300 C 240 270 200 220 180 150"/>
+              <path d="M300 300 C 360 270 400 220 420 150"/>
+              <path d="M300 360 C 230 350 180 370 130 420"/>
+              <path d="M300 360 C 370 350 420 370 470 420"/>
+            </g>
+            <!-- 冠 -->
+            <g fill="#d8b979" fill-opacity=".18">
+              <circle cx="180" cy="140" r="58"/>
+              <circle cx="300" cy="120" r="70"/>
+              <circle cx="420" cy="140" r="58"/>
+            </g>
+            <g fill="#f4efe4" fill-opacity=".7">
+              <circle cx="160" cy="120" r="5"/><circle cx="205" cy="150" r="4"/>
+              <circle cx="300" cy="95" r="6"/><circle cx="330" cy="140" r="4"/><circle cx="270" cy="140" r="4"/>
+              <circle cx="440" cy="120" r="5"/><circle cx="400" cy="150" r="4"/>
+            </g>
+            <!-- 标签 -->
+            <g font-family="serif" fill="#f4efe4">
+              <text x="300" y="95" text-anchor="middle" fill-opacity=".92" font-size="19" letter-spacing="4">文化繁荣兴盛</text>
+              <text x="180" y="52" text-anchor="middle" fill-opacity=".6" font-size="13" letter-spacing="2">叁 · 文化安全守护</text>
+              <text x="420" y="52" text-anchor="middle" fill-opacity=".6" font-size="13" letter-spacing="2">贰 · 交流互鉴</text>
+              <text x="300" y="260" text-anchor="middle" fill-opacity=".85" font-size="15" letter-spacing="3">传承 CRAFT</text>
+              <text x="110" y="430" text-anchor="middle" fill-opacity=".6" font-size="13" letter-spacing="2">壹 · 根脉与底气</text>
+              <text x="492" y="430" text-anchor="middle" fill-opacity=".6" font-size="13" letter-spacing="2">守正创新</text>
+              <text x="300" y="530" text-anchor="middle" fill-opacity=".55" font-size="12" letter-spacing="3">根 · 自信</text>
+            </g>
+            <text x="40" y="590" fill="#f4efe4" fill-opacity=".22" font-size="14" font-family="serif" letter-spacing="4">OUR TREE</text>
+          </svg>
+        </div>
+
+        <div class="reveal" data-delay="80">
+          <h3>一棵树的完整结构</h3>
+          <p>
+            我们用一棵树，把三章内容收进一张总图——它不是比喻游戏，而是这组内容本来的逻辑顺序：
+            先有根，再有枝，最后才知道篱笆该扎在哪。
+          </p>
+
+          <ul class="mini-list">
+            <li><b>根 · 文化自信</b><span>根脉、典籍与技艺是养分来源。根扎得深，树才不必向任何方向证明自己（第一篇章）。</span></li>
+            <li><b>枝 · 文化交流</b><span>枝叶向世界伸展，也把外面的空气和阳光换回来——交流是双向的（第二篇章）。</span></li>
+            <li><b>篱 · 文化安全</b><span>篱笆不挡风，只挡斧头。它护住根与干，让树可以放心地长（第三篇章）。</span></li>
+            <li><b>果 · 繁荣兴盛</b><span>果子不是目标本身，是前三层都健康时的自然结果——也是我们这代人要添的那一茬。</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 贰 · 做法 -->
+  <section class="section section--paper2">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="num">贰</div>
+        <div>
+          <h2>我们的一些做法</h2>
+          <p>概念只有落到具体的事上才有意义。以下是我们小组认同、并且真的可以做的几件事。</p>
+        </div>
+      </div>
+
+      <div class="pillars reveal">
+        <div class="pillar">
+          <h3>守住 <span>LEARN</span></h3>
+          <p>先把"家底"看清楚：去一次博物馆，听一场民乐，认真过一个传统节日——用使用代替供奉。</p>
+        </div>
+        <div class="pillar">
+          <h3>传出去 <span>SHARE</span></h3>
+          <p>用年轻人擅长的方式接着讲：拍短视频、做二创、给身边人讲展柜背后的故事。</p>
+        </div>
+        <div class="pillar">
+          <h3>护起来 <span>CARE</span></h3>
+          <p>守住底线：转发前核实，支持正版，不给谣传和恶搞按下一次转发键。</p>
+        </div>
+      </div>
+
+      <ol class="checks">
+        <li class="reveal"><span><strong>认真过一个传统节日</strong>：不是拍照发圈，而是包一次粽子、写一副春联、陪家里人守一次岁。</span></li>
+        <li class="reveal" data-delay="40"><span><strong>每学期至少进一次博物馆</strong>：看完记住一件展品，回去查它的来历——比泛泛打卡有用得多。</span></li>
+        <li class="reveal" data-delay="80"><span><strong>学一门"慢"的手艺</strong>：哪怕只是书法、剪纸或一样民族乐器，亲身体会"非遗为什么难"。</span></li>
+        <li class="reveal" data-delay="120"><span><strong>用镜头记录身边的手艺人</strong>：楼下修表的、写春联的、唱地方戏的——短视频是最好的数字建档。</span></li>
+        <li class="reveal" data-delay="160"><span><strong>支持正版</strong>：拒绝盗录盗播。没有回报的手艺，会自己消失。</span></li>
+        <li class="reveal" data-delay="200"><span><strong>转发前先核实</strong>：看到"惊人历史真相"，先去权威出处对一对。不做谣言的最后一棒。</span></li>
+        <li class="reveal" data-delay="240"><span><strong>把文化讲给不了解的人听</strong>：包括外国朋友。自信不是沉默，而是愿意开口。</span></li>
+      </ol>
+
+      <div class="quote reveal">
+        「树的用处，是让人在树下站一会儿。文化也是。」
+        <small>—— 关于我们的树</small>
+      </div>
+    </div>
+  </section>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div>
+      <div class="footer__brand">戏 · 文化三章</div>
+      <p style="margin:0;max-width:420px;line-height:1.9;">
+        以四个切面观察中国文化：自信、互鉴、安全与生长。内容为科普整理，史料与法条请以官方发布为准。
+      </p>
+    </div>
+    <div class="footer__links">
+      <a href="#p1">文化自信</a>
+      <a href="#p2">文化交流</a>
+      <a href="#p3">文化安全</a>
+      <a href="#p4">我们的树</a>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>&copy; <span id="year">2026</span> xigai · 分享版（单文件，可离线查看）</span>
+    <span>纯 HTML / CSS / JS 构建</span>
+  </div>
+</footer>
+
+<button class="to-top" aria-label="回到顶部">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
+  </svg>
+</button>
+
+<script>
+/* xigai — 交互脚本：导航、进度、滚动入场、标签页 */
+(function () {
+  "use strict";
+
+  var nav = document.querySelector(".nav");
+  var toggle = document.querySelector(".nav__toggle");
+  var progress = document.querySelector(".progress");
+  var toTop = document.querySelector(".to-top");
+
+  /* 移动端菜单 */
+  if (toggle) {
+    toggle.addEventListener("click", function () {
+      var open = nav.classList.toggle("is-open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
+    document.querySelectorAll(".nav__links a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        nav.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
+
+  /* 滚动状态：导航底色、进度条、回到顶部 */
+  var ticking = false;
+
+  function onScroll() {
+    var y = window.scrollY || document.documentElement.scrollTop;
+    var doc = document.documentElement;
+
+    if (nav) nav.classList.toggle("is-solid", y > 40);
+
+    if (progress) {
+      var total = doc.scrollHeight - window.innerHeight;
+      var ratio = total > 0 ? y / total : 0;
+      progress.style.width = Math.min(100, Math.max(0, ratio * 100)) + "%";
+    }
+
+    if (toTop) toTop.classList.toggle("is-visible", y > 560);
+    ticking = false;
+  }
+
+  window.addEventListener("scroll", function () {
+    if (!ticking) {
+      window.requestAnimationFrame(onScroll);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  onScroll();
+
+  if (toTop) {
+    toTop.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  /* 滚动入场 */
+  var items = document.querySelectorAll(".reveal");
+
+  if ("IntersectionObserver" in window && items.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          var delay = el.dataset.delay || 0;
+          setTimeout(function () { el.classList.add("is-in"); }, Number(delay));
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+
+    items.forEach(function (el) { io.observe(el); });
+  } else {
+    items.forEach(function (el) { el.classList.add("is-in"); });
+  }
+
+  /* 标签页 */
+  var tabButtons = document.querySelectorAll(".tab");
+
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var target = btn.getAttribute("data-tab");
+
+      tabButtons.forEach(function (b) {
+        var on = b === btn;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+
+      document.querySelectorAll(".panel").forEach(function (panel) {
+        panel.classList.toggle("is-active", panel.id === target);
+      });
+    });
+  });
+
+  /* 当前页面高亮 */
+  var page = document.body.getAttribute("data-page");
+  if (page) {
+    document.querySelectorAll('.nav__links a[data-nav="' + page + '"]').forEach(function (a) {
+      a.classList.add("is-active");
+      a.setAttribute("aria-current", "page");
+    });
+  }
+})();
+
+</script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
